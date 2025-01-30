@@ -11,6 +11,7 @@ openai = "^1.60.2"
 click = "^8.1.8"
 autogen = "^0.7.2"
 questionary = "^2.1.0"
+asciinema = "^2.4.0"
 
 
 [build-system]
