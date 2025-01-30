@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "ideation-cli"
+version = "0.1.0"
+description = "A Python-based command-line application that helps generate creative ideas using AI-powered ideation techniques."
+authors = ["reayd-falmouth <dr323090@falmouth.ac.uk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.14"
+openai = "^1.60.2"
+click = "^8.1.8"
+autogen = "^0.7.2"
+questionary = "^2.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+poetry-plugin-export = "^1.8.0"
+pytest = "*"
+pytest-cov = "*"
+pytest-env = "*"
+pytest-mock = "*"
+
+
+[tool.poetry.group.linting.dependencies]
+ruff = "^0.0.291"
+black = "^24.10.0"
+pylint = "==2.6.0"
+autopep8 = "^2.0.4"
+
+
+[tool.pytest.ini_options]
+log_cli = false
+log_cli_level = 0
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]
+markers = [
+    "integration",
+    "unit"
+]
+
+# Configuration settings for the coverage tool to specify how code coverage is calculated
+[tool.coverage.run]
+# The 'source' list defines the directories or specific files to include when calculating code coverage.
+source = [
+    "*/lib/*.py",  # Include all Python files in any 'lib' directory at any depth
+    "*/bin/*.py",  # Include all Python files in any 'bin' directory at any depth
+]
+
+# The 'omit' list specifies files or directories to exclude from coverage calculations.
+omit = [
+    "*/tests/*",      # Exclude all files in any 'tests' directory at any depth
+    "*conftest.py*",  # Exclude all 'conftest.py' files, which are used by pytest for test configurations
+    "*setup.py*",     # Exclude 'setup.py', typically used for package and distribution management
+    "*__init__.py*",  # Exclude '__init__.py' files, which are generally used for module initialization and may not contain functional code
+]
