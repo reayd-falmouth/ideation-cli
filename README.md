@@ -3,6 +3,8 @@
 ## Overview
 The **Ideation CLI Tool** is a Python command-line application designed to help users apply various ideation techniques to creative artifacts. It integrates OpenAI's GPT models and Autogen to generate innovative ideas based on selected methods. Users can specify an artifact, choose an ideation technique, set the number of ideas to generate, and select whether they want a text or image-based output.
 
+![Demo](./img/output.gif)
+
 ## Features
 - Supports multiple ideation techniques, including Brainstorming, Mind Maps, SCAMPER, and more.
 - Generates text-based or image-based outputs.
