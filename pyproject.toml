@@ -5,13 +5,18 @@ description = "A Python-based command-line application that helps generate creat
 authors = ["reayd-falmouth <dr323090@falmouth.ac.uk>"]
 readme = "README.md"
 
+[tool.poetry.scripts]
+ideation-cli = "ideation_cli.cli:cli"
+
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
 openai = "^1.60.2"
 click = "^8.1.8"
 autogen = "^0.7.2"
 questionary = "^2.1.0"
-asciinema = "^2.4.0"
+pygame = "^2.6.1"
+pygame-gui = "^0.6.13"
+moderngl = "^5.12.0"
 
 
 [build-system]
@@ -25,7 +30,7 @@ pytest = "*"
 pytest-cov = "*"
 pytest-env = "*"
 pytest-mock = "*"
-
+asciinema = "^2.4.0"
 
 [tool.poetry.group.linting.dependencies]
 ruff = "^0.0.291"

@@ -1,8 +1,10 @@
+SOURCE_PATH = ideation_cli
+
 install:
 	@poetry install
 
 cli:
-	@poetry run python ideation_cli/cli.py
+	@poetry run python -m ideation_cli.cli
 
 black:
 	@echo "Formatting with black..."
@@ -35,4 +37,9 @@ test: ## Run pytest with coverage and clear cache
 		--cov-report=term \
 		--cov-report=html
 
-
+PYLINT_OPTIONS ?=
+# --disable=all --enable=missing-function-docstring
+# Runs pylint checks
+pylint:  ## Runs pylint
+	@echo "Running pylint checks..."
+	@PYTHONPATH=$(SOURCE_PATH) poetry run pylint $(PYLINT_OPTIONS)  $(SOURCE_PATH)
