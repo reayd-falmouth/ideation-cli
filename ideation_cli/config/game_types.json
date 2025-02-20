@@ -1,0 +1,74 @@
+{
+  "game_types": [
+    "Falling Block Puzzle",
+    "Paddle Ball Games",
+    "Grid Movement Chase",
+    "Side-to-Side Shooters",
+    "Asteroid Dodging",
+    "Obstacle Avoidance",
+    "Falling Object Reaction",
+    "Wave-Based Shooters",
+    "Isometric Arcade Action",
+    "Maze Navigation & Collection",
+    "Multi-Level Climbing",
+    "Basic Precision Platforming",
+    "Melee Brawler Platforming",
+    "Run-and-Gun Shooters",
+    "Action-Adventure Platforming",
+    "Turn-Based Tactics (Small-Scale)",
+    "Hex-Based Army Strategy",
+    "Turn-Based City Building",
+    "Grid-Based Turn-Based RPG",
+    "Turn-Based Command & Battle",
+    "Turn-Based Tactical Combat",
+    "Space Survival Strategy",
+    "Simplified Fighting Game",
+    "Boxing Reaction Game",
+    "Classic Board Games",
+    "Roll-and-Move Board Games",
+    "Word Games",
+    "Deduction & Guessing Games",
+    "Tile-Matching & Logic Puzzles",
+    "Card & Solitaire Games"
+  ],
+  "arcade_action_games": [
+    { "type": "Falling Block Puzzle", "examples": ["Tetris"] },
+    { "type": "Paddle Ball Games", "examples": ["Pong", "Breakout", "Arkanoid"] },
+    { "type": "Grid Movement Chase", "examples": ["Pac-Man", "Q*bert"] },
+    { "type": "Side-to-Side Shooters", "examples": ["Space Invaders", "Galaga"] },
+    { "type": "Asteroid Dodging", "examples": ["Asteroids", "Lunar Lander"] },
+    { "type": "Obstacle Avoidance", "examples": ["Frogger", "Paperboy (simplified)"] },
+    { "type": "Falling Object Reaction", "examples": ["Missile Command", "Dig Dug"] },
+    { "type": "Wave-Based Shooters", "examples": ["Centipede", "Robotron: 2084", "Defender"] },
+    { "type": "Isometric Arcade Action", "examples": ["Zaxxon (if done as 2D)"] },
+    { "type": "Maze Navigation & Collection", "examples": ["Bubble Bobble", "BurgerTime"] },
+    { "type": "Multi-Level Climbing", "examples": ["Joust", "Tempest (2D version)"] }
+  ],
+  "platformers_action_games": [
+    { "type": "Basic Precision Platforming", "examples": ["Prince of Persia (simplified physics)"] },
+    { "type": "Melee Brawler Platforming", "examples": ["Double Dragon", "Final Fight", "Ninja Gaiden"] },
+    { "type": "Run-and-Gun Shooters", "examples": ["Contra", "Mega Man"] },
+    { "type": "Action-Adventure Platforming", "examples": ["Castlevania", "Metroid (basic elements)"] }
+  ],
+  "turn_based_tactical_games": [
+    { "type": "Turn-Based Tactics (Small-Scale)", "examples": ["X-COM (simplified)", "Fire Emblem (simplified)"] },
+    { "type": "Hex-Based Army Strategy", "examples": ["Risk (basic AI)"] },
+    { "type": "Turn-Based City Building", "examples": ["SimCity (simplified)"] },
+    { "type": "Grid-Based Turn-Based RPG", "examples": ["Heroes of Might and Magic (simplified)"] },
+    { "type": "Turn-Based Command & Battle", "examples": ["Command & Conquer (simplified)"] },
+    { "type": "Turn-Based Tactical Combat", "examples": ["Spelunky (simplified roguelike)", "Darkest Dungeon (simplified)"] },
+    { "type": "Space Survival Strategy", "examples": ["FTL: Faster Than Light (simplified)"] }
+  ],
+  "fighting_timing_combat_games": [
+    { "type": "Simplified Fighting Game", "examples": ["Street Fighter II (1-button fighting version)"] },
+    { "type": "Boxing Reaction Game", "examples": ["Punch-Out!! (simplified rhythm-based)"] }
+  ],
+  "puzzle_board_games": [
+    { "type": "Classic Board Games", "examples": ["Chess", "Checkers", "Go", "Reversi", "Backgammon", "Mancala", "Nine Men’s Morris"] },
+    { "type": "Roll-and-Move Board Games", "examples": ["Snakes and Ladders", "Ludo", "Parcheesi"] },
+    { "type": "Word Games", "examples": ["Scrabble (basic AI or multiplayer)", "Boggle"] },
+    { "type": "Deduction & Guessing Games", "examples": ["Battleship", "Yahtzee"] },
+    { "type": "Tile-Matching & Logic Puzzles", "examples": ["Minesweeper", "Bejeweled", "Mahjong Solitaire"] },
+    { "type": "Card & Solitaire Games", "examples": ["FreeCell", "Solitaire"] }
+  ]
+}

@@ -196,3 +196,6 @@ dist-ssr
 *.pyc
 *.pyo
 staticfiles
+ideas
+games
+archive
