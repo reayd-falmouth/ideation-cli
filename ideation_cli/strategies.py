@@ -36,7 +36,7 @@ from ideation_cli.utils import load_json
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
-def generate_random_game_prompt():
+def generate_random_game_prompt(game_type: str = None):
     """Generate a random game development prompt.
 
     This function selects a classic game from a predefined JSON file
@@ -47,16 +47,19 @@ def generate_random_game_prompt():
             - str: A generated prompt string.
             - str: The name of the selected classic game.
     """
+    print("Randomizing game prompt...")
+
     # Load the list of classic games from the JSON configuration file
     classic_games = load_json(f"{DIRNAME}/config/classic_games.json")["classic_games"]
 
     # Randomly select a game from the list
-    game = random.choice(classic_games)
+    if game_type is None:
+        game_type = random.choice(classic_games)
 
     # Construct the game development prompt
-    prompt = f"Develop a basic '{game}' game."
+    prompt = f"Develop a basic '{game_type}' game."
 
-    return prompt, game
+    return prompt, game_type
 
 
 def apply_oblique_strategy(prompt):
@@ -72,6 +75,8 @@ def apply_oblique_strategy(prompt):
     Returns:
         str: The modified prompt incorporating the oblique strategy.
     """
+    print("Apply oblique strategy...")
+
     # Load the list of oblique strategies from the JSON configuration file
     oblique_strategies = load_json(f"{DIRNAME}/config/oblique_strategies.json")[
         "oblique_strategies"

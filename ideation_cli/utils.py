@@ -72,7 +72,6 @@ def parse_arguments():
     parser.add_argument(
         "--task",
         type=str,
-        default="Develop a basic Gomoku game.",
         help="The prompt that defines the software to be generated.",
     )
 
@@ -88,7 +87,6 @@ def parse_arguments():
     parser.add_argument(
         "--type",
         type=str,
-        default="Gomoku",
         help="Type of game to create.",
     )
 
@@ -107,6 +105,13 @@ def parse_arguments():
         type=int,
         default=1,
         help="How many ideas to generate.",
+    )
+
+    # Generate a name
+    parser.add_argument(
+        "--name",
+        type=str,
+        help="The name to use, if not provided a random one will be generated based on the task",
     )
 
     args = parser.parse_args()
@@ -223,4 +228,4 @@ def save_args_to_json(data, dir_path):
     with open(json_file, "w", encoding="utf-8") as file_obj:
         dump(data, file_obj, indent=4)
 
-    print(f"Saved run output to {json_file}")
+    # print(f"Saved run output to {json_file}")

@@ -38,7 +38,6 @@ Usage:
 
 import os
 
-import openai
 import requests
 from openai import OpenAI
 
@@ -79,6 +78,8 @@ def generate_ideas(artifact, technique, count, model):
 
 def generate_name(prompt, model):
     """Generates remediation's using OpenAI API and Autogen."""
+    print(f"Generating name for task {prompt}")
+
     model = validate_model(model)
 
     try:
@@ -152,6 +153,7 @@ def generate_metadata(prompt_task, prompt_name, model):
 
 def generate_cover(prompt_task, prompt_name, dir_path):
     """Generate and save a pixel art cover image for a game, ensuring the directory exists."""
+    print("Generating cover image...")
 
     # Generate the image prompt
     prompt = (
@@ -182,7 +184,7 @@ def generate_cover(prompt_task, prompt_name, dir_path):
         with open(image_path, "wb") as file:
             file.write(image_data)
 
-        print(f"Image saved as {image_path}")
+        # print(f"Image saved as {image_path}")
 
     except Exception as err:
         print(err)

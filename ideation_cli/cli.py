@@ -40,8 +40,7 @@ Usage:
 
 import json
 import os
-
-from pydantic_core.core_schema import none_schema
+from datetime import datetime
 
 from ideation_cli.generator import (
     generate_metadata,
@@ -72,26 +71,40 @@ def cli():
     game_type = args.type
     model = args.model
     count = args.count
+    name = args.name
     errors = None
 
     for i in range(count):
         if args.randomize:
-            task, game_type = generate_random_game_prompt()
+            task, _game_type = generate_random_game_prompt(game_type)
+        else:
+            _game_type = game_type
 
         if args.oblique_strategy:
-            task = apply_oblique_strategy(task)
+            _task = apply_oblique_strategy(task)
+            print(f"Task created: {_task}")
+        else:
+            _task = task
 
-        print(task)
-
-        name = generate_name(task, model).strip()
-        game_type = game_type.replace(" ", "")
+        if args.name is None:
+            name = generate_name(_task, model).strip()
+            print(f"Name: {name}")
+            _game_type = _game_type.replace(" ", "")
 
         game_id = create_game_id(name)
-        dir_path = os.path.join(args.path, game_type, game_id)
+
+        if args.name:
+            timestamp = datetime.now().strftime(
+                "%Y%m%d%H%M%S"
+            )  # Format: YYYYMMDD_HHMMSS
+            game_id = f"{game_id}_{timestamp}"
+
+        # Make the project directory structure
+        dir_path = os.path.join(args.path, _game_type, game_id)
         os.makedirs(dir_path, exist_ok=True)
 
         # Generate metadata
-        metadata = generate_metadata(task, name, model)
+        metadata = generate_metadata(_task, name, model)
         try:
             metadata_json = json.loads(metadata)
         except json.JSONDecodeError as e:
@@ -101,15 +114,15 @@ def cli():
 
         # Generate a cover image
         if args.cover:
-            generate_cover(task, name, dir_path)
+            generate_cover(_task, name, dir_path)
 
         # Prepare output dictionary
         output = vars(args).copy()  # Copy to avoid modifying original args
         output.update(
             {
-                "task": task,
+                "task": _task,
                 "name": name,
-                "game_type": game_type if game_type else None,
+                "game_type": _game_type if _game_type else None,
                 "branding_data": metadata_json,
                 "errors": errors if errors else None,
             }
