@@ -27,6 +27,7 @@ Usage:
 
 import argparse
 import os
+import sys
 from json import dump, load
 
 import questionary
@@ -44,8 +45,6 @@ def parse_arguments():
     Returns:
         argparse.Namespace: An object containing the parsed command-line arguments.
     """
-    import sys
-    import argparse
 
     parser = argparse.ArgumentParser(
         description="Ideation CLI",
@@ -131,7 +130,6 @@ def parse_arguments():
     # If no command-line arguments (other than the script name) are given, print help and exit.
     if len(sys.argv) == 1:
         parser.print_help()
-        sys.exit(0)
 
     return parser.parse_args()
 
