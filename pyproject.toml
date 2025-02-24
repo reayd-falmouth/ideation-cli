@@ -60,5 +60,4 @@ omit = [
     "*/tests/*",      # Exclude all files in any 'tests' directory at any depth
     "*conftest.py*",  # Exclude all 'conftest.py' files, which are used by pytest for test configurations
     "*setup.py*",     # Exclude 'setup.py', typically used for package and distribution management
-    "*__init__.py*",  # Exclude '__init__.py' files, which are generally used for module initialization and may not contain functional code
 ]

@@ -4,38 +4,6 @@ cli.py - Command-Line Interface for the Ideation CLI.
 This module provides the main entry point for the Ideation CLI, allowing users
 to generate game ideas, apply creative ideation techniques, and produce branding
 assets. The CLI supports both interactive mode and argument-based execution.
-
-Features:
-    - Interactive mode for user-driven idea generation.
-    - Automated game idea generation based on predefined strategies.
-    - Application of Brian Eno's Oblique Strategies to ideation.
-    - Branding asset generation, including names and cover images.
-    - JSON output storage for reproducibility.
-
-Functions:
-    - cli(): Handles command-line input, processes arguments, and executes
-             the necessary game generation workflows.
-
-Dependencies:
-    - json
-    - os
-    - ideation_cli.generator (for branding and idea generation)
-    - ideation_cli.strategies (for game prompts and oblique strategies)
-    - ideation_cli.utils (for argument parsing, interactive mode, and file handling)
-
-Usage:
-    Run the CLI tool directly from the terminal:
-
-    ```bash
-    python cli.py --random-game --branding
-    ```
-
-    Alternatively, use interactive mode if no arguments are provided:
-
-    ```bash
-    python cli.py
-    ```
-
 """
 
 import json
@@ -48,7 +16,7 @@ from ideation_cli.generator import (
     generate_cover,
     generate_ideas,
 )
-from ideation_cli.strategies import generate_random_game_prompt, apply_oblique_strategy
+from ideation_cli.strategies import generate_random_game_prompt
 from ideation_cli.utils import (
     parse_arguments,
     use_interactive_mode,
@@ -61,75 +29,79 @@ def cli():
     """Command-line interface for ideation techniques."""
     args = parse_arguments()
 
-    if args is None:  # No arguments provided, use interactive mode
-        artifact, technique, count, model = use_interactive_mode()
-        generate_ideas(artifact, technique.lower().replace(" ", "_"), count, model)
-        return
+    # If interactive mode is selected, gather interactive parameters
+    if args.interactive:
+        interactive_params = use_interactive_mode()  # returns a dict with all options
+        # Merge interactive parameters into args by updating the args dict.
+        args_dict = vars(args)
+        args_dict.update(interactive_params)
+        # Convert back to a simple namespace-like object
+        args = type("Args", (), args_dict)
 
-    # Process logic based on flags
+    # Process parameters from either mode
     task = args.task
     game_type = args.type
     model = args.model
     count = args.count
     name = args.name
-    errors = None
 
-    for i in range(count):
-        if args.randomize:
-            task, _game_type = generate_random_game_prompt(game_type)
-        else:
-            _game_type = game_type
+    # If randomize is set, override task and game_type with a random game prompt.
+    if args.randomize:
+        task, game_type = generate_random_game_prompt(game_type)
 
-        if args.oblique_strategy:
-            _task = apply_oblique_strategy(task)
-            print(f"Task created: {_task}")
-        else:
-            _task = task
+    # If no task was provided, warn the user.
+    if not task:
+        print("No task provided. Exiting.")
+        return
 
-        if args.name is None:
-            name = generate_name(_task, model).strip()
-            print(f"Name: {name}")
-            _game_type = _game_type.replace(" ", "")
+    # Generate a name if not provided
+    if not name:
+        name = generate_name(task, model).strip()
+        print(f"Generated name: {name}")
 
-        game_id = create_game_id(name)
+    # Create a unique game ID from the name and current timestamp
+    base_game_id = create_game_id(name)
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    game_id = f"{base_game_id}_{timestamp}"
 
-        if args.name:
-            timestamp = datetime.now().strftime(
-                "%Y%m%d%H%M%S"
-            )  # Format: YYYYMMDD_HHMMSS
-            game_id = f"{game_id}_{timestamp}"
+    # Create the project directory structure
+    # Remove spaces from game_type for directory naming consistency.
+    game_dir = game_type.replace(" ", "") if game_type else "default"
+    dir_path = os.path.join(args.path, game_dir, game_id)
+    os.makedirs(dir_path, exist_ok=True)
 
-        # Make the project directory structure
-        dir_path = os.path.join(args.path, _game_type, game_id)
-        os.makedirs(dir_path, exist_ok=True)
+    # Generate metadata and try to load it as JSON
+    metadata = generate_metadata(task, name, model)
+    try:
+        metadata_json = json.loads(metadata)
+    except json.JSONDecodeError as e:
+        print(f"Invalid JSON in metadata: {e}")
+        metadata_json = metadata
 
-        # Generate metadata
-        metadata = generate_metadata(_task, name, model)
-        try:
-            metadata_json = json.loads(metadata)
-        except json.JSONDecodeError as e:
-            print(f"Invalid JSON: {e}")
-            errors = str(e)
-            metadata_json = metadata
+    # Generate cover image if requested
+    if args.cover:
+        generate_cover(task, name, dir_path)
 
-        # Generate a cover image
-        if args.cover:
-            generate_cover(_task, name, dir_path)
+    # Prepare an output dictionary with all relevant parameters
+    output = {
+        "randomize": args.randomize,
+        "ideation_technique": args.ideation_technique,
+        "cover": args.cover,
+        "task": task,
+        "path": args.path,
+        "type": game_type,
+        "model": model,
+        "count": count,
+        "name": name,
+        "game_id": game_id,
+        "branding_data": metadata_json,
+    }
 
-        # Prepare output dictionary
-        output = vars(args).copy()  # Copy to avoid modifying original args
-        output.update(
-            {
-                "task": _task,
-                "name": name,
-                "game_type": _game_type if _game_type else None,
-                "branding_data": metadata_json,
-                "errors": errors if errors else None,
-            }
-        )
+    # Optionally, generate ideas (if this is part of your workflow)
+    generate_ideas(task, game_type.lower().replace(" ", "_"), count, model)
 
-        # Save the arguments to a JSON file
-        save_args_to_json(output, dir_path)
+    # Save output parameters to JSON for reproducibility
+    save_args_to_json(output, dir_path)
 
 
 if __name__ == "__main__":

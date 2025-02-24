@@ -12,3 +12,15 @@ MODEL_CHOICES = [
     "gpt-3.5-turbo",
     "o1-preview",
 ]
+
+IDEATION_TECHNIQUES = [
+    "Brainstorming",
+    "Mind Maps",
+    "Round Robin",
+    "Opposite Thinking",
+    "Cut-Up",
+    "Mash-Up",
+    "Crazy Eights",
+    "SCAMPER",
+    "Oblique Strategy",
+]
