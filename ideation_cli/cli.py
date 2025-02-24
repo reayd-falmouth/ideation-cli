@@ -61,7 +61,7 @@ def cli():
     """Command-line interface for ideation techniques."""
     args = parse_arguments()
 
-    if args is None:  # No arguments provided, use interactive mode
+    if args.interactive:  # No arguments provided, use interactive mode
         artifact, technique, count, model = use_interactive_mode()
         generate_ideas(artifact, technique.lower().replace(" ", "_"), count, model)
         return
