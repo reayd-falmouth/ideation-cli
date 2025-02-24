@@ -31,7 +31,7 @@ from json import dump, load
 
 import questionary
 
-from . import MODEL_CHOICES
+from . import MODEL_CHOICES, IDEATION_TECHNIQUES
 
 
 def parse_arguments():
@@ -43,9 +43,14 @@ def parse_arguments():
 
     Returns:
         argparse.Namespace: An object containing the parsed command-line arguments.
-        If no arguments are provided, returns None to trigger interactive prompts.
     """
-    parser = argparse.ArgumentParser(description="Ideation CLI")
+    import sys
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Ideation CLI",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
 
     # Flag to enable random game and strategy selection
     parser.add_argument(
@@ -54,28 +59,30 @@ def parse_arguments():
         help="Enable random game and strategy selection.",
     )
 
-    # Flag to apply one of Brian Eno's Oblique Strategies to development
+    # Ideation technique selection
     parser.add_argument(
-        "--oblique-strategy",
-        action="store_true",
-        help="Apply one of Brian Eno's Oblique Strategies to the development.",
+        "--ideation-technique",
+        type=str,
+        choices=IDEATION_TECHNIQUES,
+        default="Oblique Strategy",
+        help="Select an ideation technique from available choices.",
     )
 
     # Flag to generate cover images, descriptions, and tags for branding
     parser.add_argument(
-        "--cover",
+        "--image",
         action="store_true",
-        help="Generate a cover image",
+        help="Generate a an image to visualise the idea.",
     )
 
     # Argument to specify the software prompt
     parser.add_argument(
         "--task",
         type=str,
-        help="The prompt that defines the software to be generated.",
+        help="The prompt that defines the idea to be generated.",
     )
 
-    # Argument to specify the directory where ideas are saved
+    # Argument to specify the directory where ideas will be saved
     parser.add_argument(
         "--path",
         type=str,
@@ -85,7 +92,7 @@ def parse_arguments():
 
     # Argument to specify the type of game to create
     parser.add_argument(
-        "--type",
+        "--game-type",
         type=str,
         help="Type of game to create.",
     )
@@ -114,13 +121,19 @@ def parse_arguments():
         help="The name to use, if not provided a random one will be generated based on the task",
     )
 
-    args = parser.parse_args()
+    # Interactive mode flag to trigger interactive prompts.
+    parser.add_argument(
+        "--interactive",
+        action="store_true",
+        help="Trigger interactive mode to input values via prompts.",
+    )
 
-    # If no arguments were provided, return None to trigger interactive questionary prompts
-    if not any(vars(args).values()):
-        return None
+    # If no command-line arguments (other than the script name) are given, print help and exit.
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(0)
 
-    return args
+    return parser.parse_args()
 
 
 def create_game_id(prompt_name):
@@ -177,46 +190,73 @@ def use_interactive_mode():
     """
     Runs an interactive prompt to gather user input for generating ideas.
 
-    This function prompts the user to describe an artifact, choose an ideation
-    technique, specify the number of ideas to generate, select an output type,
-    and choose an AI model. It ensures user inputs are validated where necessary.
+    This function prompts the user for each option available via the command-line:
+        - randomize (bool): Enable random game and strategy selection.
+        - oblique_strategy (bool): Apply an Oblique Strategy.
+        - ideation_technique (str): Choose an ideation technique from predefined choices.
+        - cover (bool): Generate a cover image.
+        - task (str): The prompt that defines the software to be generated.
+        - path (str): Directory where ideas will be saved.
+        - type (str): Type of game to create.
+        - model (str): Select an AI model from available choices.
+        - count (int): How many ideas to generate.
+        - name (str): The name to use (if not provided, a random one will be generated based on the task).
 
     Returns:
-        tuple: A tuple containing:
-            - str: The artifact description provided by the user.
-            - str: The selected ideation technique.
-            - int: The number of ideas to generate (default is 1 if input is invalid).
-            - str: The chosen output type ("Text" or "Image").
-            - str: The selected AI model from predefined options.
+        dict: A dictionary containing the interactive input for each option.
     """
-    # Prompt user to describe the artifact they want to modify
-    artifact = questionary.text("Describe the artifact you want to modify:").ask()
 
-    # Allow user to select an ideation technique from predefined choices
-    technique = questionary.select(
-        "Choose an ideation technique:",
-        choices=[
-            "Brainstorming",
-            "Mind Maps",
-            "Round Robin",
-            "Opposite Thinking",
-            "Cut-Up",
-            "Mash-Up",
-            "Crazy Eights",
-            "SCAMPER",
-        ],
+    # Boolean flags
+    randomize = questionary.confirm("Enable random game and strategy selection?").ask()
+
+    cover = questionary.confirm("Generate a cover image?").ask()
+
+    # Text inputs
+    task = questionary.text(
+        "Enter the task prompt (defines the software to be generated):"
     ).ask()
 
-    # Prompt user to enter the number of ideas to generate, defaulting to 1 if invalid
-    count = questionary.text("How many ideas should be generated? (Default: 1)").ask()
-    count = (
-        int(count) if count.isdigit() else 1
-    )  # Ensure count is an integer, fallback to 1
+    path = questionary.text(
+        "Enter the directory where ideas will be saved (default: ideas):",
+        default="ideas",
+    ).ask()
 
-    # Allow user to choose an AI model from predefined options
-    model = questionary.select("Select an AI model:", choices=MODEL_CHOICES).ask()
+    game_type = questionary.text("Enter the type of game to create:").ask()
 
-    return artifact, technique, count, model
+    name = questionary.text("Enter a name to use (leave blank for random):").ask()
+
+    # Choice for ideation technique
+    ideation_technique = questionary.select(
+        "Choose an ideation technique:",
+        choices=IDEATION_TECHNIQUES,
+        default="Oblique Strategy",
+    ).ask()
+
+    # Choice for AI model
+    model = questionary.select(
+        "Select an AI model:", choices=MODEL_CHOICES, default="gpt-4o"
+    ).ask()
+
+    # Numeric input for count
+    count_input = questionary.text(
+        "How many ideas should be generated? (Default: 1)"
+    ).ask()
+    try:
+        count = int(count_input)
+    except (TypeError, ValueError):
+        count = 1
+
+    return {
+        "randomize": randomize,
+        "ideation_technique": ideation_technique,
+        "cover": cover,
+        "task": task,
+        "path": path,
+        "type": game_type,
+        "model": model,
+        "count": count,
+        "name": name,
+    }
 
 
 def save_args_to_json(data, dir_path):
