@@ -18,15 +18,15 @@ def test_model_choices_entries():
 
 def test_ideation_techniques_entries():
     expected_ideation_techniques = [
-        "Brainstorming",
-        "Mind Maps",
-        "Round Robin",
-        "Opposite Thinking",
-        "Cut-Up",
-        "Mash-Up",
-        "Crazy Eights",
-        "SCAMPER",
-        "Oblique Strategy",
+        "brainstorming",
+        "mind_maps",
+        "round_robin",
+        "opposite_thinking",
+        "cut_up",
+        "mash_up",
+        "crazy_eights",
+        "scamper",
+        "oblique_strategy",
     ]
     # Assert that the IDEATION_TECHNIQUES list exactly matches the expected list.
     assert IDEATION_TECHNIQUES == expected_ideation_techniques
