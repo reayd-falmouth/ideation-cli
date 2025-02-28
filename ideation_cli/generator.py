@@ -48,45 +48,40 @@ OPENAI_CLIENT = OpenAI()
 DIRNAME = os.path.dirname(__file__)
 
 
-def generate_ideas(artifact, technique, count, model):
+def generate_ideas(artifact, technique, model):
     """Generates remediation's using OpenAI API and Autogen."""
 
     prompt = get_prompt(artifact, technique)
-    responses = []
 
-    for _ in range(count):
-        completion = OPENAI_CLIENT.chat.completions.create(
-            model=model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful assistant that generates concise, standalone "
-                    "ideas. Your answers have no preamble or summary. You provide them in "
-                    "text only without markdown.",
-                },
-                {
-                    "role": "user",
-                    "content": prompt,
-                },
-            ],
-        )
-
-        responses.append(completion.choices[0].message.content)
-
-    print("\nGenerated Ideas:\n" + "\n".join(responses))
+    completion = OPENAI_CLIENT.chat.completions.create(
+        model=model,
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful assistant that generates concise, standalone "
+                "ideas. Your answers have no preamble or summary. You provide them in "
+                "text only without markdown.",
+            },
+            {
+                "role": "user",
+                "content": prompt,
+            },
+        ],
+    )
+    return completion.choices[0].message.content
 
 
-def generate_name(prompt, model):
+def generate_name(prompt, model, temperature=1.0, top_p=1.0):
     """Generates remediation's using OpenAI API and Autogen."""
-    print(f"Generating name for task {prompt}")
+    print(f"Generating name for task: '{prompt}'")
 
     model = validate_model(model)
 
     try:
         completion = OPENAI_CLIENT.chat.completions.create(
             model=model,
-            temperature=0.7,
-            top_p=0.8,
+            temperature=temperature,
+            top_p=top_p,
             messages=[
                 {
                     "role": "system",
@@ -112,15 +107,17 @@ def generate_name(prompt, model):
         print(err)
 
 
-def generate_metadata(prompt_task, prompt_name, model):
+def generate_metadata(
+    prompt_task, prompt_name, model, temperature: float = 1.0, top_p: float = 1.0
+):
     """Generates remediation's using OpenAI API and Autogen."""
     model = validate_model(model)
 
     try:
         completion = OPENAI_CLIENT.chat.completions.create(
             model=model,
-            temperature=0.7,
-            top_p=0.8,
+            temperature=temperature,
+            top_p=top_p,
             messages=[
                 {
                     "role": "system",

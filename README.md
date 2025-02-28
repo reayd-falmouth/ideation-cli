@@ -93,3 +93,6 @@ This project is licensed under the MIT License. See `LICENSE` for details.
 - Integration with Autogen multi-agent brainstorming.
 - Support for additional creative techniques.
 - Expanded image processing capabilities.
+
+## References
+- https://community.openai.com/t/hallucinations-can-be-useful/274284

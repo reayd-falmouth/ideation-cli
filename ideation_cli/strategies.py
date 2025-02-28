@@ -31,6 +31,7 @@ import os
 import random
 
 from ideation_cli.utils import load_json
+from ideation_cli.prompts import get_prompt
 
 # Define the directory name for loading configuration files
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
@@ -89,3 +90,11 @@ def apply_oblique_strategy(prompt):
     prompt += f" Modify it by applying the oblique strategy: '{strategy}'."
 
     return prompt
+
+
+def apply_ideation_technique(prompt, technique):
+    if technique == "oblique_strategy":
+        new_prompt = apply_oblique_strategy(prompt)
+    else:
+        new_prompt = get_prompt(prompt, technique)
+    return new_prompt

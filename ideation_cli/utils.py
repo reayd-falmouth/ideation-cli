@@ -63,7 +63,6 @@ def parse_arguments():
         "--ideation-technique",
         type=str,
         choices=IDEATION_TECHNIQUES,
-        default="Oblique Strategy",
         help="Select an ideation technique from available choices.",
     )
 
@@ -125,6 +124,22 @@ def parse_arguments():
         "--interactive",
         action="store_true",
         help="Trigger interactive mode to input values via prompts.",
+    )
+
+    # Change the temperature
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=1.0,
+        help="Controls randomness, higher values increase diversity.",
+    )
+
+    # Change the top-p
+    parser.add_argument(
+        "--top-p",
+        type=float,
+        default=1.0,
+        help="The cumulative probability cutoff for token selection. Lower values mean sampling from a smaller, more top-weighted nucleus.",
     )
 
     # If no command-line arguments (other than the script name) are given, print help and exit.

@@ -12,7 +12,7 @@ def test_parse_arguments_defaults(monkeypatch):
 
     # Even with no additional args, our parser returns a Namespace with default values.
     assert args.randomize is False
-    assert args.ideation_technique == "Oblique Strategy"
+    assert args.ideation_technique is None
     assert args.image is False
     assert args.task is None
     assert args.path == "ideas"
@@ -39,7 +39,7 @@ def test_parse_arguments_custom(monkeypatch):
             "script_name",
             "--randomize",
             "--ideation-technique",
-            "Mind Maps",
+            "mind_maps",
             "--image",
             "--task",
             "Test Task",
@@ -57,7 +57,7 @@ def test_parse_arguments_custom(monkeypatch):
     )
     args = utils.parse_arguments()
     assert args.randomize is True
-    assert args.ideation_technique == "Mind Maps"
+    assert args.ideation_technique == "mind_maps"
     assert args.image is True
     assert args.task == "Test Task"
     assert args.path == "/tmp/ideas"

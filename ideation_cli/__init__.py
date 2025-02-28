@@ -14,13 +14,13 @@ MODEL_CHOICES = [
 ]
 
 IDEATION_TECHNIQUES = [
-    "Brainstorming",
-    "Mind Maps",
-    "Round Robin",
-    "Opposite Thinking",
-    "Cut-Up",
-    "Mash-Up",
-    "Crazy Eights",
-    "SCAMPER",
-    "Oblique Strategy",
+    "brainstorming",
+    "mind_maps",
+    "round_robin",
+    "opposite_thinking",
+    "cut_up",
+    "mash_up",
+    "crazy_eights",
+    "scamper",
+    "oblique_strategy",
 ]
