@@ -28,97 +28,88 @@ from ideation_cli.utils import (
 )
 
 
-def cli():
-    """Command-line interface for ideation techniques."""
-    args = parse_arguments()
+def process_game_iteration(args) -> None:
+    """Processes a single game iteration based on the provided arguments."""
+    # Determine the task and game type.
+    if args.randomize:
+        _task, _game_type = generate_random_game_prompt(args.game_type, args.theme)
+        print(f"Prompt: {_task}")
+    else:
+        _task = args.task
+        _game_type = args.game_type
 
-    # If interactive mode is selected, gather interactive parameters
-    if args.interactive:
-        interactive_params = use_interactive_mode()  # returns a dict with all options
-        # Merge interactive parameters into args by updating the args dict.
-        args_dict = vars(args)
-        args_dict.update(interactive_params)
-        # Convert back to a simple namespace-like object
-        args = type("Args", (), args_dict)
+    # If no task was provided, skip this iteration.
+    if not _task:
+        print("No task provided. Skipping iteration.")
+        return
 
-    # Process parameters from either mode
-    task = args.task
-    game_type = args.game_type
-    model = args.model
-    count = args.count
-    name = args.name
-    ideation_technique = args.ideation_technique
-    temperature = args.temperature
-    top_p = args.top_p
+    # Apply ideation technique if specified.
+    if args.ideation_technique:
+        _task, strategy = apply_ideation_technique(_task, args.ideation_technique)
+        print(f"New task with ideation technique: {strategy}")
 
-    for i in range(count):
+    # Generate a name if none was provided.
+    if not args.name:
+        _name = generate_name(_task, args.model, args.temperature, args.top_p).strip()
+        print(f"Generated name: {_name}")
+    else:
+        _name = args.name
 
-        # If randomize is set, override task and game_type with a random game prompt.
-        if args.randomize:
-            _task, _game_type = generate_random_game_prompt(game_type)
-            print(f"Prompt: {_task}")
-        else:
-            _task = task
-            _game_type = game_type
+    # Create a unique game ID using the name and the current timestamp.
+    base_game_id = create_game_id(_name)
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    game_id = f"{base_game_id}_{timestamp}"
+    safe_game_id = game_id.replace("Title:", "").replace('"', "").replace(" ", "_")
+    game_dir = _game_type.replace(" ", "") if _game_type else "default"
+    dir_path = os.path.join(args.path, game_dir, safe_game_id)
+    os.makedirs(dir_path, exist_ok=True)
 
-        # If no task was provided, warn the user.
-        if not _task:
-            return
-
-        if ideation_technique:
-            _task = apply_ideation_technique(_task, ideation_technique)
-            print(f"New task with ideation technique: {_task}")
-
-        # Generate a name if not provided
-        if not name:
-            _name = generate_name(_task, model, temperature, top_p).strip()
-            print(f"Generated name: {_name}")
-        else:
-            _name = name
-
-        # Create a unique game ID from the name and current timestamp
-        base_game_id = create_game_id(_name)
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        game_id = f"{base_game_id}_{timestamp}"
-
-        # Create the project directory structure
-        # Remove spaces from game_type for directory naming consistency.
-        game_dir = _game_type.replace(" ", "") if _game_type else "default"
-        dir_path = os.path.join(args.path, game_dir, game_id)
-        os.makedirs(dir_path, exist_ok=True)
-
-        # Generate metadata and try to load it as JSON
-        metadata = generate_metadata(_task, _name, model)
+    # Generate metadata and attempt to parse it as JSON.
+    metadata = generate_metadata(_task, _name, args.model)
+    if isinstance(metadata, str):
         try:
             metadata_json = json.loads(metadata)
         except json.JSONDecodeError as e:
             print(f"Error: Invalid JSON in metadata: {e}")
             metadata_json = metadata
+    else:
+        metadata_json = metadata
 
-        # Generate cover image if requested
-        if args.image:
-            generate_cover(_task, _name, dir_path)
+    # Generate a cover image if requested.
+    if args.image:
+        generate_cover(_task, _name, dir_path)
 
-        # Prepare an output dictionary with all relevant parameters
-        output = {
-            "randomize": args.randomize,
-            "ideation_technique": args.ideation_technique,
-            "cover": args.image,
-            "task": _task,
-            "path": args.path,
-            "game_type": _game_type,
-            "model": model,
-            "count": count,
-            "name": _name,
-            "game_id": game_id,
-            "branding_data": metadata_json,
-        }
+    # Build the output dictionary and save it.
+    output = {
+        "randomize": args.randomize,
+        "ideation_technique": args.ideation_technique,
+        "cover": args.image,
+        "task": _task,
+        "path": args.path,
+        "game_type": _game_type,
+        "model": args.model,
+        "count": args.count,
+        "name": _name,
+        "game_id": game_id,
+        "branding_data": metadata_json,
+    }
 
-        # Optionally, generate ideas (if this is part of your workflow)
-        # generate_ideas(task, _game_type.lower().replace(" ", "_"), model)
+    save_args_to_json(output, dir_path)
 
-        # Save output parameters to JSON for reproducibility
-        save_args_to_json(output, dir_path)
+
+def cli():
+    """Command-line interface for ideation techniques."""
+    args = parse_arguments()
+
+    # If interactive mode is selected, gather interactive parameters.
+    if args.interactive:
+        interactive_params = use_interactive_mode()  # returns a dict with all options
+        args_dict = vars(args)
+        args_dict.update(interactive_params)
+        args = type("Args", (), args_dict)
+
+    for _ in range(args.count):
+        process_game_iteration(args)
 
 
 if __name__ == "__main__":

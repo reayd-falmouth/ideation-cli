@@ -32,4 +32,7 @@ def get_prompt(artifact, technique):
         "scamper": f"Apply the SCAMPER technique (substitute, combine, adapt, modify, put to other uses, "
         f"eliminate, rearrange) to {artifact}.",
     }
-    return templates.get(technique, f"Generate creative ideas based on {artifact}.")
+    return (
+        templates.get(technique, f"Generate creative ideas based on {artifact}."),
+        technique,
+    )
