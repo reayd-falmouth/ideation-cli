@@ -141,6 +141,12 @@ def parse_arguments():
         default=1.0,
         help="The cumulative probability cutoff for token selection. Lower values mean sampling from a smaller, more top-weighted nucleus.",
     )
+    # theme
+    parser.add_argument(
+        "--theme",
+        type=str,
+        help="A theme for the ideation engine to work with",
+    )
 
     # If no command-line arguments (other than the script name) are given, print help and exit.
     if len(sys.argv) == 1:

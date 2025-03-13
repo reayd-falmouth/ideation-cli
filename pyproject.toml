@@ -46,6 +46,9 @@ markers = [
     "integration",
     "unit"
 ]
+env = [
+    "OPENAI_API_KEY=somekey",
+]
 
 # Configuration settings for the coverage tool to specify how code coverage is calculated
 [tool.coverage.run]

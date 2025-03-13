@@ -43,3 +43,35 @@ PYLINT_OPTIONS ?=
 pylint:  ## Runs pylint
 	@echo "Running pylint checks..."
 	@PYTHONPATH=$(SOURCE_PATH) poetry run pylint $(PYLINT_OPTIONS)  $(SOURCE_PATH)
+
+aquatic_games:
+	@echo "Creating aquatic games..."
+	@ideation-cli --theme "Create concept for a Game Jam, with the theme 'Fish' and Ethics and sustainability."  \
+		--ideation-technique oblique_strategy \
+		--image \
+		--game-type "Space Invaders" \
+		--count 1 \
+		--randomize \
+		--path ideas/aquatic \
+		--temperature 1.2
+
+aquatic_pause_menu:
+	@echo "Creating pause menu..."
+	@ideation-cli \
+		--image \
+		--game-type "Ridiculous Fishing" \
+		--name "Pause Menu" \
+		--task "A whirlpool in the ocean, devouring ships" \
+		--count 5 \
+		--path ideas/aquatic
+
+rpg_games:
+	@echo "Creating RPG games..."
+	@ideation-cli --theme "$$(cat prompts/rpg_game_jam_2025.md)"  \
+		--ideation-technique oblique_strategy \
+		--image \
+		--game-type "RPG" \
+		--count 5 \
+		--randomize \
+		--path ideas/rpggamejam \
+		--temperature 1.2

@@ -37,28 +37,37 @@ from ideation_cli.prompts import get_prompt
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
-def generate_random_game_prompt(game_type: str = None):
+def generate_random_game_prompt(
+    game_type: str = None, theme: str = None, genre: str = "game_genres"
+):
     """Generate a random game development prompt.
 
-    This function selects a classic game from a predefined JSON file
+    This function selects a classic game type from a predefined JSON file
     and constructs a prompt to develop a basic version of that game.
 
     Returns:
         tuple: A tuple containing:
             - str: A generated prompt string.
-            - str: The name of the selected classic game.
+            - str: The selected game type.
     """
     print("Randomizing game prompt...")
 
-    # Load the list of classic games from the JSON configuration file
+    # Load the list of classic games and game genres from their respective JSON configuration files
     classic_games = load_json(f"{DIRNAME}/config/classic_games.json")["classic_games"]
+    game_genres = load_json(f"{DIRNAME}/config/game_genres.json")["all_genres"]
 
-    # Randomly select a game from the list
+    # Randomly select a game type if none is provided
     if game_type is None:
-        game_type = random.choice(classic_games)
+        if genre == "classic_games":
+            game_type = random.choice(classic_games)
+        else:
+            game_type = random.choice(game_genres)
 
-    # Construct the game development prompt
-    prompt = f"Develop a basic '{game_type}' game."
+    # Construct the game development prompt without conflating the game type and the theme
+    prompt = f"Develop a basic '{game_type}' game"
+    if theme:
+        prompt += f" with the theme '{theme}'"
+    prompt += "."
 
     return prompt, game_type
 
@@ -89,12 +98,12 @@ def apply_oblique_strategy(prompt):
     # Append the selected strategy to the prompt
     prompt += f" Modify it by applying the oblique strategy: '{strategy}'."
 
-    return prompt
+    return prompt, strategy
 
 
 def apply_ideation_technique(prompt, technique):
     if technique == "oblique_strategy":
-        new_prompt = apply_oblique_strategy(prompt)
+        new_prompt, strategy = apply_oblique_strategy(prompt)
     else:
-        new_prompt = get_prompt(prompt, technique)
-    return new_prompt
+        new_prompt, strategy = get_prompt(prompt, technique)
+    return new_prompt, strategy
