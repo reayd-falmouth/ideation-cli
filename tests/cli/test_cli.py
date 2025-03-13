@@ -228,7 +228,7 @@ def fake_process_game_iteration(args):
 fake_process_game_iteration.called = False
 
 
-def test_cli(monkeypatch):
+def test_cli(monkeypatch, openai_env):
     monkeypatch.setattr("ideation_cli.cli.parse_arguments", fake_parse_arguments)
     monkeypatch.setattr(
         "ideation_cli.cli.use_interactive_mode", fake_use_interactive_mode

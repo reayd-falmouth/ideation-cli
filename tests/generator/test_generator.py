@@ -82,7 +82,7 @@ def fake_exception_create(**kwargs):
 # --- Unit Tests ---
 
 
-def test_generate_ideas(monkeypatch):
+def test_generate_ideas(monkeypatch, openai_env):
     monkeypatch.setattr(generator, "get_prompt", fake_get_prompt)
     monkeypatch.setattr(
         generator.OPENAI_CLIENT.chat.completions, "create", fake_create_idea
@@ -92,7 +92,7 @@ def test_generate_ideas(monkeypatch):
     assert result == "idea content"
 
 
-def test_generate_name(monkeypatch):
+def test_generate_name(monkeypatch, openai_env):
     monkeypatch.setattr(generator, "validate_model", fake_validate_model)
     monkeypatch.setattr(
         generator.OPENAI_CLIENT.chat.completions, "create", fake_create_name
@@ -103,7 +103,7 @@ def test_generate_name(monkeypatch):
     assert result == "game title"
 
 
-def test_generate_metadata(monkeypatch):
+def test_generate_metadata(monkeypatch, openai_env):
     monkeypatch.setattr(generator, "validate_model", fake_validate_model)
     monkeypatch.setattr(
         generator.OPENAI_CLIENT.chat.completions, "create", fake_create_metadata
@@ -117,7 +117,7 @@ def test_generate_metadata(monkeypatch):
     assert result["tags"] == []
 
 
-def test_generate_image_prompt(monkeypatch):
+def test_generate_image_prompt(monkeypatch, openai_env):
     # Patch the chat.completions.create call to simulate generating an image prompt.
     monkeypatch.setattr(
         generator.OPENAI_CLIENT.chat.completions, "create", fake_create_image_prompt_api
@@ -129,7 +129,7 @@ def test_generate_image_prompt(monkeypatch):
     assert result == "Detailed pixel art prompt"
 
 
-def test_generate_cover(monkeypatch, tmp_path):
+def test_generate_cover(monkeypatch, tmp_path, openai_env):
     # Patch generate_image_prompt to use our fake function.
     monkeypatch.setattr(generator, "generate_image_prompt", fake_generate_image_prompt)
     # Patch the image generation and requests.get calls.
@@ -153,7 +153,7 @@ def test_generate_cover(monkeypatch, tmp_path):
     assert content == b"fake image data"
 
 
-def test_generate_name_exception(monkeypatch):
+def test_generate_name_exception(monkeypatch, openai_env):
     monkeypatch.setattr(generator, "validate_model", fake_validate_model)
     monkeypatch.setattr(
         generator.OPENAI_CLIENT.chat.completions, "create", fake_exception_create
@@ -163,7 +163,7 @@ def test_generate_name_exception(monkeypatch):
         generator.generate_name("A game about space", "model")
 
 
-def test_generate_metadata_exception(monkeypatch):
+def test_generate_metadata_exception(monkeypatch, openai_env):
     monkeypatch.setattr(generator, "validate_model", fake_validate_model)
     monkeypatch.setattr(
         generator.OPENAI_CLIENT.chat.completions, "create", fake_exception_create
