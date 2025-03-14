@@ -138,7 +138,7 @@ def test_generate_cover(monkeypatch, tmp_path):
 
     # Use the tmp_path fixture for a temporary directory.
     temp_dir = str(tmp_path)
-    result = generator.generate_cover(
+    result, prompt = generator.generate_cover(
         "a game concept", "GameName", temp_dir, prompt_model="gpt-4", temperature=0.7
     )
 

@@ -1,7 +1,10 @@
-import os
 import json
+import os
+from typing import Tuple
+
 import requests
 from openai import OpenAI
+
 from ideation_cli.prompts import get_prompt
 from ideation_cli.utils import validate_model
 
@@ -112,7 +115,7 @@ def generate_cover(
     dir_path: str,
     prompt_model: str = "gpt-4",
     temperature: float = 0.7,
-) -> str:
+) -> Tuple[str, str]:
     """Generates and saves a pixel art cover image for a game, returning the image path.
 
     It first generates a detailed image prompt using the OpenAI chat API, then uses that prompt to generate the image.
@@ -136,6 +139,6 @@ def generate_cover(
         image_data = requests.get(image_url).content
         with open(image_path, "wb") as file:
             file.write(image_data)
-        return image_path
+        return image_path, image_prompt
     except Exception as err:
         raise RuntimeError("Failed to generate cover image") from err

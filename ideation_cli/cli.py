@@ -76,14 +76,16 @@ def process_game_iteration(args) -> None:
         metadata_json = metadata
 
     # Generate a cover image if requested.
+    cover_info = None
     if args.image:
-        generate_cover(_task, _name, dir_path)
+        cover_image_path, cover_prompt = generate_cover(_task, _name, dir_path)
+        cover_info = {"image_path": cover_image_path, "image_prompt": cover_prompt}
 
     # Build the output dictionary and save it.
     output = {
         "randomize": args.randomize,
         "ideation_technique": args.ideation_technique,
-        "cover": args.image,
+        "cover": cover_info,
         "task": _task,
         "path": args.path,
         "game_type": _game_type,
