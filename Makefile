@@ -75,3 +75,26 @@ rpg_games:
 		--randomize \
 		--path ideas/rpggamejam \
 		--temperature 1.2
+
+love_game_jam_2025:
+	@echo "Creating Love2d 2025 game jam ideas..."
+	@ideation-cli --theme "$$(cat prompts/love_game_jam_2025.md)"  \
+		--theme "Plan" \
+		--ideation-technique oblique_strategy \
+		--image \
+		--count 10 \
+		--game-type "Bomberman" \
+		--randomize \
+		--path ideas/lovegamejam2025 \
+		--temperature 1.2
+
+healthy_habits_app:
+	@echo "Creating Healthy Habits game jam ideas..."
+	@ideation-cli --theme "$$(cat prompts/healthy_habits_app.md)"  \
+		--theme "Healthy Habits" \
+		--ideation-technique oblique_strategy \
+		--image \
+		--count 8 \
+		--randomize \
+		--path ideas/healthyhabitsapp \
+		--temperature 1.2

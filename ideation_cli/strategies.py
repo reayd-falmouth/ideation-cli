@@ -38,7 +38,7 @@ DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
 def generate_random_game_prompt(
-    game_type: str = None, theme: str = None, genre: str = "game_genres"
+    game_type: str = None, theme: str = None, genre: str = "casual_mobile_games"
 ):
     """Generate a random game development prompt.
 
@@ -55,11 +55,14 @@ def generate_random_game_prompt(
     # Load the list of classic games and game genres from their respective JSON configuration files
     classic_games = load_json(f"{DIRNAME}/config/classic_games.json")["classic_games"]
     game_genres = load_json(f"{DIRNAME}/config/game_genres.json")["all_genres"]
+    casual_mobile_games = load_json(f"{DIRNAME}/config/casual_mobile_games.json")["casual_mobile_games"]
 
     # Randomly select a game type if none is provided
     if game_type is None:
         if genre == "classic_games":
             game_type = random.choice(classic_games)
+        elif genre == "casual_mobile_games":
+            game_type = random.choice(casual_mobile_games)
         else:
             game_type = random.choice(game_genres)
 

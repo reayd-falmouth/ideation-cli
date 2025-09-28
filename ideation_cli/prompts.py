@@ -18,6 +18,18 @@ Usage:
     ```
 """
 
+GAME_NAME_PROMPT = (
+    "You are a creative naming assistant. Generate concise, standalone names for video game jams. "
+    "Avoid clichés and over-used words—vary your vocabulary and explore unexpected combinations. "
+    "Think outside the box: use vivid imagery, playful wordplay or surprising contrasts. "
+    "Answer with only the name, no preamble or summary."
+)
+
+GAME_METADATA_PROMPT = (
+    "You are a helpful assistant that generates metadata about video games. Your answers have no "
+    "preamble or summary. Provide a short description, detailed description, and an appropriate set of tags "
+    'as valid JSON: {"short_description": str, "detailed_description": str, "tags": list}'
+)
 
 def get_prompt(artifact, technique):
     """Returns a prompt template based on the selected ideation technique."""

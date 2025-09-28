@@ -5,23 +5,12 @@ from typing import Tuple
 import requests
 from openai import OpenAI
 
+from ideation_cli.prompts import GAME_NAME_PROMPT, GAME_METADATA_PROMPT
 from ideation_cli.prompts import get_prompt
 from ideation_cli.utils import validate_model
 
 OPENAI_CLIENT = OpenAI()
 DIRNAME = os.path.dirname(__file__)
-
-# Module-level constants for system prompts
-GAME_NAME_PROMPT = (
-    "You are a helpful assistant that generates concise, standalone names for video games. "
-    "Your answers have no preamble or summary. Provide a title without special characters."
-)
-
-GAME_METADATA_PROMPT = (
-    "You are a helpful assistant that generates metadata about video games. Your answers have no "
-    "preamble or summary. Provide a short description, detailed description, and an appropriate set of tags "
-    "as valid JSON: {'short_description': 'string', 'detailed_description': string, 'tags': list}"
-)
 
 
 def _call_openai_chat(
@@ -54,7 +43,7 @@ def generate_ideas(artifact: str, technique: str, model: str) -> str:
 
 
 def generate_name(
-    prompt: str, model: str, temperature: float = 1.0, top_p: float = 1.0
+    prompt: str, model: str, temperature: float = 1.2, top_p: float = 1.0
 ) -> str:
     """Generates a game name based on a prompt."""
     model = validate_model(model)
@@ -82,7 +71,16 @@ def generate_metadata(
         },
     ]
     response = _call_openai_chat(model, messages, temperature, top_p)
-    return json.loads(response)
+    if isinstance(response, str):
+        try:
+            metadata_json = json.loads(response)
+        except json.JSONDecodeError as e:
+            print(f"Error: Invalid JSON in metadata: {e}")
+            metadata_json = response
+    else:
+        metadata_json = response
+
+    return metadata_json
 
 
 def generate_image_prompt(

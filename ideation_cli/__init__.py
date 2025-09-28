@@ -11,6 +11,7 @@ MODEL_CHOICES = [
     "gpt-4o-mini",
     "gpt-3.5-turbo",
     "o1-preview",
+    "o4-mini",
 ]
 
 IDEATION_TECHNIQUES = [
